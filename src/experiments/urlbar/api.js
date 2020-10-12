@@ -16,6 +16,17 @@ XPCOMUtils.defineLazyModuleGetters(this, {
   UrlbarProviderExtension: "resource:///modules/UrlbarProviderExtension.jsm",
 });
 
+Components.utils.import("resource://gre/modules/Services.jsm");
+var { ExtensionParent } = ChromeUtils.import(
+  "resource://gre/modules/ExtensionParent.jsm"
+);
+let extension = ExtensionParent.GlobalManager.getExtension(
+  "pt-test@mozilla.org"
+);
+let { Foo } = ChromeUtils.import(extension.rootURI.resolve(
+  "experiments/urlbar/mozTrie.jsm"
+));
+
 XPCOMUtils.defineLazyGetter(
   this,
   "defaultPreferences",
@@ -115,6 +126,7 @@ let loader = {
 
 this.experiments_urlbar = class extends ExtensionAPI {
   getAPI(context) {
+
     // Do the initial loading of data, probably a better place for this?
     loader.load(context);
 
