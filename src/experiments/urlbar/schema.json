@@ -55,7 +55,21 @@
             "description": "Search term to match"
           }
         ]
+      },
+      {
+        "name": "resultVisited",
+        "type": "function",
+        "async": true,
+        "description": "Ensures visits are properly attributed.",
+        "parameters": [
+          {
+            "name": "url",
+            "type": "string",
+            "description": "URL that was visited"
+          }
+        ]
       }
+
     ]
   }
 ]

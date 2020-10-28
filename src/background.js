@@ -55,10 +55,6 @@ class ProviderDynamicPalmTree extends UrlbarProvider {
 
   cancelQuery(queryContext) {}
 
-  pickResult(result) {
-    console.log("Result picked!", result);
-  }
-
   handleEngagement(state) {
     if (state == "start") {
       this._resultReturned = false;
@@ -71,6 +67,10 @@ class ProviderDynamicPalmTree extends UrlbarProvider {
         URLBAR_PROVIDER_NAME,
         1
       );
+    }
+
+    if (state === "engagement") {
+      api.resultVisited(this.matchedResult.url);
     }
   }
 }

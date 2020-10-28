@@ -13,6 +13,7 @@ const { XPCOMUtils } = ChromeUtils.import(
 );
 
 XPCOMUtils.defineLazyModuleGetters(this, {
+  PartnerLinkAttribution: "resource:///modules/PartnerLinkAttribution.jsm",
   Preferences: "resource://gre/modules/Preferences.jsm",
   UrlbarProviderExtension: "resource:///modules/UrlbarProviderExtension.jsm",
 });
@@ -34,15 +35,21 @@ async function time(fun) {
 }
 
 this.experiments_urlbar = class extends ExtensionAPI {
+  onStartup() {
+    time(() => treeProvider.load(this.extension.rootURI));
+  }
   getAPI(context) {
-    // Do the initial loading of data, probably a better place for this?
-    time(() => treeProvider.load(context));
-
     return {
       experiments: {
         urlbar: {
           matchSearchTerm: phrase => {
             return time(() => treeProvider.query(phrase));
+          },
+          resultVisited: url => {
+            PartnerLinkAttribution.makeRequest({
+              targetURL: url,
+              source: "urlbar",
+            });
           },
           onViewUpdateRequested: new ExtensionCommon.EventManager({
             context,
