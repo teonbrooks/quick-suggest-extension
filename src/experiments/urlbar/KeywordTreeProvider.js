@@ -19,12 +19,13 @@ class KeywordTreeProvider {
     this.title = "";
   }
 
-  async load({ extension }) {
-    let data = await KeywordTreeProvider.fetchJSON(extension, SUGGESTIONS_PATH);
+  async load(root) {
+    let url = root.resolve(SUGGESTIONS_PATH);
+    let data = await KeywordTreeProvider.fetchJSON(url);
     this.title = data.title;
     this.results = data.records;
     this.tree.fromJSON(data.tree);
-    this.iconPath = extension.baseURI.resolve(ICON_PATH);
+    this.iconPath = root.resolve(ICON_PATH);
   }
 
   async query(phrase) {
@@ -36,13 +37,12 @@ class KeywordTreeProvider {
     return {
       title: this.title.replace("%s", result.term),
       url: result.url,
-      icon: this.iconPath,
+      icon: this.iconPath
     };
   }
 
-  static async fetchJSON(extension, path) {
-    let fullPath = extension.baseURI.resolve(path);
-    let req = await fetch(fullPath);
+  static async fetchJSON(url) {
+    let req = await fetch(url);
     return req.json();
   }
 }
